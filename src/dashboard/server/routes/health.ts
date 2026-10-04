@@ -85,13 +85,25 @@ healthRouter.get("/health", async (req, res) => {
           : "GEMINI_API_KEY missing",
       };
 
+  let harnessEnabled = process.env.ENABLE_TEST_HARNESS === "1";
+  if (!harnessEnabled) {
+    try {
+      const r = await fetch(`${url}/__test/state?memberId=12345`, {
+        signal: AbortSignal.timeout(2000),
+      });
+      harnessEnabled = r.ok;
+    } catch {
+      harnessEnabled = false;
+    }
+  }
+
   const body: HealthResponse = {
     ok: coreserv.reachable && safetyLoaded,
     demoMode: true,
     coreserv: { reachable: coreserv.reachable, url, detail: coreserv.detail },
     gemini,
     safety: { loaded: safetyLoaded, allowedBaseUrls, allowedActionKinds },
-    harness: { enabled: process.env.ENABLE_TEST_HARNESS === "1" },
+    harness: { enabled: harnessEnabled },
     busy: runManager.isBusy(),
     activeRunId: runManager.getActiveRunId(),
   };

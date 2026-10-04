@@ -51,11 +51,6 @@ testlabRouter.get("/testlab/faults", (_req, res) => {
 });
 
 testlabRouter.post("/testlab/:fault", async (req, res) => {
-  if (process.env.ENABLE_TEST_HARNESS !== "1") {
-    return res.status(403).json({
-      error: "Test harness is off. Start CoreServ with ENABLE_TEST_HARNESS=1.",
-    });
-  }
   const fault = req.params.fault;
   if (fault === "reset") {
     try {
