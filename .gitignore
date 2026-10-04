@@ -1,0 +1,15 @@
+node_modules/
+dist/
+src/dashboard/web/dist/
+.env
+evidence/**
+!evidence/.gitkeep
+artifacts/**
+!artifacts/.gitkeep
+src/core/escalation/interventions.json
+data/
+!data/.gitkeep
+*.sqlite
+*.sqlite-*
+*.log
+.DS_Store

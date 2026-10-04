@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Operator Console — UI Automation</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, sans-serif; margin: 24px; background: #f6f7f9; color: #1a1a1a; }
+    h1 { font-size: 1.25rem; margin: 0 0 8px; }
+    p.sub { color: #555; margin: 0 0 20px; font-size: 0.9rem; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+    .pending { border-left: 4px solid #c45c26; }
+    .resumed { border-left: 4px solid #2a7a4b; opacity: 0.75; }
+    .meta { font-size: 0.8rem; color: #666; }
+    code { background: #eee; padding: 1px 4px; border-radius: 3px; }
+    button { margin-top: 8px; padding: 6px 12px; cursor: pointer; }
+    img { max-width: 100%; border: 1px solid #ccc; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Operator Console</h1>
+  <p class="sub">
+    Polls <code>interventions.json</code>. When a run is paused, complete the step in the
+    headful Playwright window, then mark resumed (or run
+    <code>npm run resume -- --runId &lt;id&gt;</code>).
+  </p>
+  <div id="list">Loading…</div>
+  <script>
+    // File protocol cannot fetch sibling JSON reliably; use a tiny hint.
+    // Prefer opening via: npx serve src/core/escalation  OR paste JSON manually.
+    // For the MVP, we also expose a polling endpoint note — CLI resume is the
+    // supported path. This page reads from a relative path when served.
+    async function load() {
+      const el = document.getElementById('list');
+      try {
+        const res = await fetch('./interventions.json?ts=' + Date.now());
+        const items = await res.json();
+        if (!items.length) {
+          el.innerHTML = '<p class="meta">No interventions yet.</p>';
+          return;
+        }
+        el.innerHTML = items.slice().reverse().map(i => `
+          <div class="card ${i.status}">
+            <div><strong>${i.runId}</strong> — ${i.status} (controller: ${i.currentController})</div>
+            <div>${escapeHtml(i.goalOrCapability)}</div>
+            <div class="meta">step ${i.stepIndex} · ${escapeHtml(i.reason)} · ${i.createdAt}</div>
+            ${i.screenshotPath ? `<div class="meta">screenshot: ${escapeHtml(i.screenshotPath)}</div>` : ''}
+            ${i.status === 'pending' ? `<p class="meta">Resume via CLI: <code>npm run resume -- --runId ${i.runId}</code></p>` : ''}
+          </div>
+        `).join('');
+      } catch (e) {
+        el.innerHTML = '<p class="meta">Could not load interventions.json. Serve this folder over HTTP ' +
+          '(e.g. <code>npx serve src/core/escalation</code>) or use the CLI resume command.</p>';
+      }
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    load();
+    setInterval(load, 2000);
+  </script>
+</body>
+</html>

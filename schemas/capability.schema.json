@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ui-automation.local/schemas/capability.schema.json",
+  "title": "CapabilityArtifact",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifactId",
+    "capabilityVersion",
+    "name",
+    "description",
+    "targetApp",
+    "preconditions",
+    "inputs",
+    "outputs",
+    "steps",
+    "checkpoint",
+    "errorHandling",
+    "safety",
+    "reviewStatus",
+    "provenance",
+    "fingerprint"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "artifactId": { "type": "string" },
+    "capabilityVersion": { "type": "integer", "minimum": 1 },
+    "version": { "type": "integer" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "targetApp": {
+      "type": "object",
+      "required": ["name", "baseUrl", "vendorProduct", "surfaceType"],
+      "properties": {
+        "name": { "type": "string" },
+        "baseUrl": { "type": "string" },
+        "vendorProduct": { "type": "string" },
+        "surfaceType": {
+          "type": "string",
+          "enum": ["web-modern", "web-legacy", "desktop"]
+        }
+      }
+    },
+    "preconditions": {
+      "type": "object",
+      "required": ["startUrl"],
+      "properties": {
+        "startUrl": { "type": "string" },
+        "requiredRole": { "type": "string" },
+        "authState": { "type": "string", "enum": ["anonymous", "authenticated"] },
+        "loginPath": { "type": "string" }
+      }
+    },
+    "inputs": { "type": "array" },
+    "outputs": { "type": "array" },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "navigate",
+              "click",
+              "type",
+              "select",
+              "waitFor",
+              "extract",
+              "assertOutcome"
+            ]
+          }
+        }
+      }
+    },
+    "checkpoint": { "type": "object" },
+    "errorHandling": { "type": "object" },
+    "safety": { "type": "object" },
+    "reviewStatus": { "type": "string", "enum": ["draft", "approved"] },
+    "provenance": { "type": "object" },
+    "fingerprint": { "type": "object" },
+    "tenant_overrides": { "type": "object" }
+  },
+  "additionalProperties": true
+}

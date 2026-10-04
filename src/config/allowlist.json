@@ -1,0 +1,12 @@
+{
+  "allowedBaseUrls": ["http://localhost:4000"],
+  "allowedActionKinds": [
+    "navigate",
+    "click",
+    "type",
+    "select",
+    "waitFor",
+    "extract",
+    "assertOutcome"
+  ]
+}
