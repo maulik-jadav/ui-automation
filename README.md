@@ -24,6 +24,7 @@ ENABLE_TEST_HARNESS=1 npm start   # http://localhost:4000
 
 # Dashboard (API + UI) — separate process, does not restyle CoreServ
 npm run dashboard                 # http://localhost:5000
+# If macOS AirPlay holds :5000, the server falls back to :5050 (or set DASHBOARD_PORT=5050)
 ```
 
 Login: http://localhost:4000/login

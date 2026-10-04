@@ -25,7 +25,12 @@ ENABLE_TEST_HARNESS=1 npm start
 npm run dashboard
 ```
 
-Open **http://localhost:5000**. Demo mode banner is always on (no auth system).
+Open **http://localhost:5000** (or **:5050** if macOS AirPlay is using 5000). Demo mode banner is always on (no auth system).
+
+```bash
+# Pin a free port if needed
+DASHBOARD_PORT=5050 npm run dashboard
+```
 
 Dev (hot reload UI):
 
